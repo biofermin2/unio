@@ -30,14 +30,13 @@ exec ros -Q -- $0 "$@"
 (defun cat-files (&rest files)
   "複数ファイルを表示"
   (dolist (f files)
-    (with-open-file
-	(in f :direction :input)
+    (with-open-file (in f :direction :input)
       (let (buff)
 	(loop
 	  (if (setq buff (read in nil))
-	      (format t "~(~s~)" buff)
-	      (return)))))))		; => CAT-FILES
-
+	      (format t "~(~a~)~&" buff)
+	      (return)))))))				    ; => CAT-FILES
+;;(cat-files "~/clep/src/clep.lisp" "~/howm/junk/while.lisp") ; => NIL
 ;; (with-output-to-string (*standard-output*)
 ;;   (cat-files "~/howm/junk/while.lisp"))	; => "(defmacro while (test &rest body) `(do () ((not ,test)) ,@body))"
 
@@ -58,28 +57,56 @@ exec ros -Q -- $0 "$@"
 	  :do (decf depth)
 	:collect (list char depth)))	; => PARSE-TREE
 
+;; obsolete [2021-10-15 00:09:43]
+;; (defun find-str-pos (str slist)
+;;   "検索文字列の先頭のpositionをリストで返す"
+;;   (loop :for i :across slist
+;; 	:count i :into cnt
+;; 	:with str-list = (coerce str 'list)
+;; 	:when (and (eq (car str-list) i)
+;; 		   (equal str (subseq slist (1- cnt) (+ (1- cnt) (length str)))))
+;; 	  :collect (1- cnt)))		; => FIND-STR-POS
+
+;; (find-str-pos "a" slist)		; => (7 39)
+
 (defun find-str-pos (str slist)
   "検索文字列の先頭のpositionをリストで返す"
-  (loop :for i :across slist
-	:count i :into cnt
-	:with str-list = (coerce str 'list)
-	:when (and (eq (car str-list) i)
-		   (equal str (subseq slist (1- cnt) (+ (1- cnt) (length str)))))
-	  :collect (1- cnt)))		; => FIND-STR-POS
+  (let ((str-len (length str)))
+    (loop :for i :across slist
+	  :when (and (eq i (car (coerce str 'list)))
+	    (equal str (subseq slist cnt (+ cnt str-len))))
+	    :collect cnt
+	  :count i :into cnt)))		; => FIND-STR-POS
+
+;;(find-str-pos "a" slist)		; => (7 39)
+
+;; Obsolete [2021-10-14 23:16:51]
+;; (defun seek (str slist &optional (skin 0))
+;;   (let ((top-pos (find-str-pos str slist))
+;; 	(parsed-list (parse-tree slist)))
+;;     (loop :for i :in top-pos
+;; 	  :for first-part = (subseq parsed-list 0 i)
+;; 	  :for key-top = (elt parsed-list i)
+;; 	  :for key-depth = (- (cadr key-top) skin)
+;; 	  :for open-pos = (position `(#\( ,key-depth) (reverse first-part) :test #'equal)
+;; 	  :for open-paren = (- i open-pos 1)
+;; 	  :for rest-part = (subseq parsed-list i)
+;; 	  :for close-pos = (position `(#\) ,(1- key-depth)) rest-part :test #'equal)
+;; 	  :for close-paren = (+ i close-pos 1)
+;; 	  :do (format t "~s~&" (subseq slist open-paren close-paren))
+;; 	  )))				; => SEEK
 
 (defun seek (str slist &optional (skin 0))
   (let ((top-pos (find-str-pos str slist))
 	(parsed-list (parse-tree slist)))
     (loop :for i :in top-pos
-	  :for first-part = (subseq parsed-list 1 i)
+	  :for first-part = (subseq parsed-list 0 i)
 	  :for key-top = (elt parsed-list i)
 	  :for key-depth = (- (cadr key-top) skin)
-	  :for open-pos = (position `(#\( ,key-depth) (reverse first-part) :test #'equal)
-	  :for open-paren = (- i open-pos 1)
+	  :for open-pos = (position `(#\( ,key-depth) first-part :test #'equal :from-end t)
 	  :for rest-part = (subseq parsed-list i)
-	  :for close-pos = (position `(#\) ,(1- key-depth)) rest-part :test #'equal)
-	  :for close-paren = (+ i close-pos 1)
-	  :do (format t "~s~&" (subseq slist open-paren close-paren))
+	  :for close-pos = (+ i (position `(#\) ,(1- key-depth)) rest-part :test #'equal) 1)
+	  :do (format t "~s~&" (subseq slist open-pos close-pos))
 	  )))				; => SEEK
 
 (defmacro main (skey &rest files)
@@ -88,7 +115,14 @@ exec ros -Q -- $0 "$@"
 		  (cat-files ,@files))))
      (seek ,skey slist)))		; => MAIN
 
-;; (main "test" "~/clep/src/clep.lisp" "~/howm/junk/while.lisp") ; =>
+(main "defmacro" "~/howm/junk/while.lisp") ; =>
+;; The bounding indices 60 and 68 are bad for a sequence of length 64.
+;;    [Condition of type SB-KERNEL:BOUNDING-INDICES-BAD-ERROR]
+;; See also:
+;;   Common Lisp Hyperspec, bounding index designator [:glossary]
+;;   Common Lisp Hyperspec, SUBSEQ-OUT-OF-BOUNDS:IS-AN-ERROR [:issue]
+
+
 ;; "(delete-duplicates
 ;; (mapcar
 ;;  #'pathname
