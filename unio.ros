@@ -73,7 +73,7 @@ exec ros -Q -- $0 "$@"
   "検索文字列の先頭のpositionをリストで返す"
   (let ((str-len (length str)))
     (loop :for i :across slist
-	  :when (and (eq i (car (coerce str 'list)))
+	  :when (and (eq i (elt str 0))
 	    (equal str (subseq slist cnt (+ cnt str-len))))
 	    :collect cnt
 	  :count i :into cnt)))		; => FIND-STR-POS
