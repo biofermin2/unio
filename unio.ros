@@ -147,3 +147,28 @@ exec ros -Q -- $0 "$@"
 ;; 		(if data
 ;; 		    (format t "\"~(~s~)~%\"" data)
 ;; 		    (return)))))))	; => READ-FILE
+
+;; ;; ok search関数利用版　作ったけど、遅いから使用せず。
+;; (defun search-loop (str slist &optional (n 0))
+;;   (let (poslis)
+;;     (loop (setq pos (search str slist :start2 n))
+;; 	  (if pos
+;; 	      (progn (push pos poslis)
+;; 		     (setq n (1+ pos)))
+;; 	      (return poslis)))))	; => SEARCH-LOOP
+
+;; (setf slist "hogehoobar hoge fuu bar piyopoyopunyo hoge") ; => "hogehoobar hoge fuu bar piyopoyopunyo hoge"
+;; (time (find-str-pos "hoge" slist))			  ; => (0 11 38)
+;; ;; Evaluation took:
+;; ;;   0.000 seconds of real time
+;; ;;   0.000006 seconds of total run time (0.000005 user, 0.000001 system)
+;; ;;   100.00% CPU
+;; ;;   15,059 processor cycles
+;; ;;   0 bytes consed
+;; (time (search-loop "hoge" slist))	; => (38 11 0)
+;; ;; Evaluation took:
+;; ;;   0.000 seconds of real time
+;; ;;   0.000010 seconds of total run time (0.000009 user, 0.000001 system)
+;; ;;   100.00% CPU
+;; ;;   33,522 processor cycles
+;; ;;   0 bytes consed
