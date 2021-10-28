@@ -1,11 +1,9 @@
 (defsystem "unio"
-  :version "0.1.0"
+  :version "0.2.0"
   :author "biofermin2"
   :license "MIT"
   :depends-on ()
-  :components ((:module "src"
-                :components
-                ((:file "unio"))))
+  :components ((:file "unio"))))
   :description "Keyword searcher for S-expression."
   :in-order-to ((test-op (test-op "unio/tests"))))
 
