@@ -3,6 +3,6 @@
   :author "biofermin2"
   :license "MIT"
   :depends-on ()
-  :components ((:file "unio"))))
+  :components ((:file "unio"))
   :description "Keyword searcher for S-expression."
-  :in-order-to ((test-op (test-op "unio/tests"))))
+  )
