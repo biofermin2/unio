@@ -1,7 +1,4 @@
 ;;;; unio.lisp
-(defpackage #:unio
-    (:use #:cl)
-    (:export :seek :seek-files))
 (in-package #:unio)
 
 (defun seek (key list &optional (skin 0) (rm-dup t)
