@@ -1,14 +1,9 @@
-﻿;;; unio.lisp
-
-(defpackage #:unio
+﻿(defpackage #:unio
     (:use #:cl)
     (:export :seek-files :seek))	; => #<PACKAGE "UNIO">
-
 (in-package #:unio)			; => #<PACKAGE "UNIO">
 
-
-;; 統合版
-(defun seek (key list &optional (skin 0)
+(defun seek (key list &optional (skin 0) (rm-dup t)
 		    &aux (depth 0) (key-len (length key)) pos)
   (check-type key string)
   (check-type list string)
@@ -28,20 +23,19 @@
 			:for open-pos = (position `(#\( ,key-depth) first-part :test #'equal :from-end t)
 			:for close-pos = (+ p (position `(#\) ,(1- key-depth)) rest-part :test #'equal) 1)
 			:collect (subseq list open-pos close-pos) :into total
-			:finally (print (remove-duplicates total :test #'equal)))))) ; => SEEK
+			:finally (if rm-dup
+				     (print (remove-duplicates total :test #'equal))
+				     (print total)))))) ; => SEEK
 
-
-;; 統合版
-(defmacro seek-files (key &rest files)
-  (check-type key string)
-  (flet ((cat-files (&rest files)
+(defmacro seek-files (key &optional (buff) &rest files)
+  `(check-type ,key string)
+  `(flet ((cat-files (&rest files)
 	   (dolist (f files)
 	     (with-open-file (in f :direction :input)
-	       (let (buff)
-		 (loop
-		   (if (setq buff (read in nil))
-		       (format t "~(~s~)~%" buff)
-		       (return))))))))
-    `(seek ,key (with-output-to-string (*standard-output*)
+	       (loop
+		 (if (setq buff (read in nil))
+		     (format t "~(~s~)~%" buff)
+		     (return)))))))
+    (seek ,key (with-output-to-string (*standard-output*)
 		  (cat-files ,@files))))) ; => SEEK-FILES
 
