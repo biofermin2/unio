@@ -5,7 +5,7 @@ S式のためのキーワード検索ツール
 
 <img alt="unio symbol" src="https://github.com/biofermin2/unio/blob/main/unio2-1e.png">
 
-this library was developed for searching a keyword in deep nested symbolic-expression like a onion.
+this library was developed for searching keywords in deep nested symbolic-expression like a onion.
 so I named this package from onion in Latin language.
 
 このライブラリは玉ねぎのようにネストが深すぎて、ほしいデータをピックアップ出来ないという
