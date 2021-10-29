@@ -6,5 +6,4 @@
   :license  "MIT"
   :version "0.2.1"
   :serial t
-  :components ((:file "package")
-               (:file "unio")))
+  :components ((:file "unio")))
