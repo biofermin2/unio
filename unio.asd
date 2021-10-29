@@ -1,8 +1,10 @@
-(defsystem "unio"
+;;;; unio.asd
+
+(asdf:defsystem #:unio
+  :description "Keyword searcher for S-expression"
+  :author "biofermin2 <twitter:@biofermin2>"
+  :license  "MIT"
   :version "0.2.1"
-  :author "biofermin2"
-  :license "MIT"
-  :depends-on ()
-  :components ((:file "unio"))
-  :description "Keyword searcher for S-expression."
-  )
+  :serial t
+  :components ((:file "package")
+               (:file "unio")))
