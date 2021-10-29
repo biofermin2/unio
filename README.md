@@ -27,12 +27,14 @@ $ ros install biofermin2/unio
 ```
 
 then it can load by quicklisp like this.
+
 quicklispを使って、local-projectsに入れたライブラリを呼び出します。
 
 ```common-lisp
 (ql:quickload :unio) 
 ```
-that's all.enjoy it!
+that's it.
+
 以上で、unioライブラリが使えるようになります。
 
 ## usage
@@ -122,7 +124,8 @@ but as you see,it will also pickup the words that contain keyword.
 特に正規表現に対応はしてませんが、ご覧の通り、
 検索キーワードを含むワードもピックアップしてくれます。
 
-let's enjoy symbolic-expression life with unio.
+have a good symbolic-expression life with unio.
+
 それではunioでS式生活をお楽しみ下さい。
 
 
