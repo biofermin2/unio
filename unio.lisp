@@ -1,7 +1,8 @@
-﻿(defpackage #:unio
+;;;; unio.lisp
+(defpackage #:unio
     (:use #:cl)
-    (:export :seek-files :seek))	; => #<PACKAGE "UNIO">
-(in-package #:unio)			; => #<PACKAGE "UNIO">
+    (:export :seek :seek-files))
+(in-package #:unio)
 
 (defun seek (key list &optional (skin 0) (rm-dup t)
 		    &aux (depth 0) (key-len (length key)) pos)
