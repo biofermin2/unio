@@ -66,11 +66,11 @@ anyway,you can use this function like this.
 ; => "((((((hoge (foo1) bar))))(((foo2 foo3)))(((hoge (foo4)) bar))"
 
 (seek "foo" lst)							   ; => 
-("(foo1)" "(foo2 foo3)" "(foo4)") NIL 
+((foo1) (foo2 foo3) (foo4)) NIL 
 (seek "foo" lst 1)			; => 
-("(hoge (foo1) bar)" "((foo2 foo3))" "(hoge (foo4))") NIL
+((hoge (foo1) bar) ((foo2 foo3)) (hoge (foo4))) NIL
 (seek "foo" lst 2)			; => 
-("((hoge (foo1) bar))" "(((foo2 foo3)))" "((hoge (foo4)) bar)") NIL
+(((hoge (foo1) bar)) (((foo2 foo3))) ((hoge (foo4)) bar)) NIL
 ```
 
 and duplicated data have removed in normal.
@@ -86,9 +86,9 @@ rm-depオプションを使えば重複データを削除しないようにも�
 ```common-lisp
 ;; if you don't use remove-duplicate function, you should set nil as the option.
 (seek "foo" lst 0 nil)			; => 
-("(foo1)" "(foo2 foo3)" "(foo2 foo3)" "(foo4)") NIL
+((foo1) (foo2 foo3) (foo2 foo3) (foo4)) NIL
 (seek "foo" lst 1 nil)			; => 
-("(hoge (foo1) bar)" "((foo2 foo3))" "((foo2 foo3))" "(hoge (foo4))") NIL
+((hoge (foo1) bar) ((foo2 foo3)) ((foo2 foo3)) (hoge (foo4))) NIL
 
 ```
 
@@ -110,13 +110,13 @@ the actual usage is as follows.
     "~/a.lisp"
     "~/b.lisp"
     "~/c.lisp")		; => 
-("(defun test4 (x) (print x))" "(defun main ())" "(defpackage :myapp
+((defun test4 (x) (print x)) (defun main ()) (defpackage :myapp
   (:use :cl)
-  (:export :main))"
- "(defun test3 (x)
+  (:export :main))
+ (defun test3 (x)
   (let ((a 1) (b 0))
-    (lambda (x) (+ a b x))))"
-			       "(defun main () (test3 7))") NIL
+    (lambda (x) (+ a b x))))
+			       (defun main () (test3 7))) NIL
 ```
 in paticular, I don't support regular expression,
 but as you see,it will also pickup the words that contain keyword.
@@ -130,6 +130,8 @@ have a good symbolic-expression life with unio.
 
 
 ## update history
+[2021-10-30] 0.2.2 seekの出力形式を文字列のリストからS式のリストに変更
+
 [2021-10-29] 0.2.1 seek関数に隠しオプションrm-dupを追加 seek-filesにあったバグの修正
 
 [2021-10-28] 0.2.0 リファクタリングでloop数など減らし型チェックも付け、５つあった関数を２つに統合。
