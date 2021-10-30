@@ -25,8 +25,8 @@
 			:for close-pos = (+ p (position `(#\) ,(1- key-depth)) rest-part :test #'equal) 1)
 			:collect (subseq list open-pos close-pos) :into total
 			:finally (if rm-dup
-				     (print (remove-duplicates total :test #'equal))
-				     (print total)))))) ; => SEEK
+				     (format t "~a" (remove-duplicates total :test #'equal))
+				     (format t "~a" total)))))) ; => SEEK
 
 (defmacro seek-files (key &optional (buff) &rest files)
   `(check-type ,key string)
