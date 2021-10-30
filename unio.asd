@@ -4,6 +4,6 @@
   :description "Keyword searcher for S-expression"
   :author "biofermin2 <twitter:@biofermin2>"
   :license  "MIT"
-  :version "0.2.1"
+  :version "0.2.2"
   :serial t
   :components ((:file "unio")))
