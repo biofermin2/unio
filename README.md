@@ -39,7 +39,7 @@ that's it.
 
 ## usage
 ### seek
-this function can search keyword from string list.
+this function can search keywords from string list.
 
 文字列となっているS式からキーワードを検索し、
 該当する箇所を抜き出します。
@@ -84,7 +84,7 @@ rm-depオプションを使えば重複データを削除しないようにも�
 ただ、普通は使わないと思います。
 
 ```common-lisp
-;; if you don't use remove-duplicate function, you should set nil as the option.
+;; if you don't want to use remove-duplicate function, you should set nil as the option.
 (seek "foo" lst 0 nil)			; => 
 ((foo1) (foo2 foo3) (foo2 foo3) (foo4)) NIL
 (seek "foo" lst 1 nil)			; => 
@@ -93,7 +93,7 @@ rm-depオプションを使えば重複データを削除しないようにも�
 ```
 
 ### seek-files
-this function can search in several files like a grep command.
+this macro can search in several files like the grep command.
 
 grepのように文字列の代わりにファイル名を指定します。
 複数ファイルにあるS式のうち検索文字列を含む箇所を抜き出します。
@@ -124,12 +124,30 @@ but as you see,it will also pickup the words that contain keyword.
 特に正規表現に対応はしてませんが、ご覧の通り、
 検索キーワードを含むワードもピックアップしてくれます。
 
+### sets
+if you want to bind above evaluated data in a variable,
+you can use this macro for it as same as setq, setf.
+
+seekやseek-filesで評価したS式を変数に格納して利用したい場合、
+setsマクロが使えます。使い方はsetqやsetfと同じような書き方で使えます。
+
+```common-lisp
+;;(sets var sexp)
+
+(sets a (seek "foo" lst))						   ; => ((FOO1) (FOO2 FOO3) (FOO4))
+(car a)									   ; => (FOO1)
+(cdr a)									   ; => ((FOO2 FOO3) (FOO4))
+
+```
+
 have a good symbolic-expression life with unio.
 
 それではunioでS式生活をお楽しみ下さい。
 
 
 ## update history
+[2021-11-02] 0.2.3 sets macroの追加
+
 [2021-10-30] 0.2.2 seekの出力形式を文字列のリストからS式のリストに変更
 
 [2021-10-29] 0.2.1 seek関数に隠しオプションrm-dupを追加 seek-filesにあったバグの修正
@@ -145,4 +163,4 @@ have a good symbolic-expression life with unio.
 - seek-filesを使う際に、正規表現でパスネーム指定出来るようにする。（現状、１つ１つファイル名を指定して上げなくてはいけない）。
 - ヘルプも表示出来るようにする。
 - コマンドラインから実行出来るようにする。
-- だいたい開発が落ち着いたら、型指定する。
+- だいたい開発が落ち着いたら、型指定などの最適化をする。
