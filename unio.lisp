@@ -40,3 +40,10 @@
     (seek ,key (with-output-to-string (*standard-output*)
 		  (cat-files ,@files))))) ; => SEEK-FILES
 
+;; ok [2021-11-02 14:01:43]
+(defmacro sets (var sexp)
+  `(setf ,var (with-input-from-string
+		  (s (with-output-to-string (*standard-output*)
+		       ,sexp) :index len)
+		(read s))))		; => SETS
+
