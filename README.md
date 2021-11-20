@@ -61,7 +61,7 @@ anyway,you can use this function like this.
 使用例は以下の通りです。
 
 ```common-lisp
-;; set sample list
+;; set sample list(string or s-exp)
 (setq lst "((((((hoge (foo1) bar))))(((foo2 foo3)))(((hoge (foo4)) bar))") 
 ; => "((((((hoge (foo1) bar))))(((foo2 foo3)))(((hoge (foo4)) bar))"
 
@@ -146,6 +146,8 @@ have a good symbolic-expression life with unio.
 
 
 ## update history
+[2021-11-20] 0.2.4 listが文字列だけでなく、S式の場合でも処理出来るように変更。seek-filesでキーワードがシンボルに変換されていたのを修正
+
 [2021-11-02] 0.2.3 sets macroの追加
 
 [2021-10-30] 0.2.2 seekの出力形式を文字列のリストからS式のリストに変更
