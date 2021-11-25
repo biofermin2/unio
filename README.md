@@ -39,14 +39,14 @@ that's it.
 
 ## usage
 ### seek
-this function can search keywords from string list.
+this function can search keywords from string list or symbol-expression.
 
-文字列となっているS式からキーワードを検索し、
-該当する箇所を抜き出します。
+文字列あるいはS式からキーワードを検索し、該当する箇所を抜き出します。
 
 ```common-lisp
-(seek "string keyword" "string list" <skin> <rm-dup>)
+(seek 'key1.key2.key3...key-n 'obj <skin> <rm-dup>)
 ;; <> means optional arguments.
+;; key is string or symbol 
 ```
 there is a skin option, you can put your favorite positive integer as far as possible.
 the option is able to select out layer S-expression.
@@ -62,16 +62,24 @@ anyway,you can use this function like this.
 
 ```common-lisp
 ;; set sample list(string or s-exp)
-(setq lst "((((((hoge (foo1) bar))))(((foo2 foo3)))(((hoge (foo4)) bar))") 
-; => "((((((hoge (foo1) bar))))(((foo2 foo3)))(((hoge (foo4)) bar))"
+(setq lst '((((((hoge (foo1) bar))))(((foo2 foo3)))(((hoge (foo4)) bar))))) ; => ((((((HOGE (FOO1) BAR)))) (((FOO2 FOO3))) (((HOGE (FOO4)) BAR))))
 
-(seek "foo" lst)							   ; => 
-((foo1) (foo2 foo3) (foo4)) NIL 
-(seek "foo" lst 1)			; => 
-((hoge (foo1) bar) ((foo2 foo3)) (hoge (foo4))) NIL
-(seek "foo" lst 2)			; => 
-(((hoge (foo1) bar)) (((foo2 foo3))) ((hoge (foo4)) bar)) NIL
+;; pickup the all word include "foo"
+(seek 'foo lst)				; => ((foo1) (foo2 foo3) (foo4))NIL
+
+;; you can specify several keywords in one time like this.
+(seek 'foo1.foo4 lst)			; => ((foo1))((foo4))NIL
+
+(seek 'foo lst 1)			; => ((hoge (foo1) bar) ((foo2 foo3)) (hoge (foo4)))NIL
+(seek 'foo lst 2)			; => (((hoge (foo1) bar)) (((foo2 foo3))) ((hoge (foo4)) bar))NIL
+
 ```
+If the skin option is specified, 
+but there are no parentheses outside,
+it will not be displayed.
+
+skinオプションで指定しても外側に括弧が存在しない場合、
+表示されなくなりますので、ご注意下さい。
 
 and duplicated data have removed in normal.
 but if you use rm-dup option, you can avoid it.
@@ -85,9 +93,9 @@ rm-depオプションを使えば重複データを削除しないようにも�
 
 ```common-lisp
 ;; if you don't want to use remove-duplicate function, you should set nil as the option.
-(seek "foo" lst 0 nil)			; => 
+(seek 'foo lst 0 nil)			; => 
 ((foo1) (foo2 foo3) (foo2 foo3) (foo4)) NIL
-(seek "foo" lst 1 nil)			; => 
+(seek 'foo lst 1 nil)			; => 
 ((hoge (foo1) bar) ((foo2 foo3)) ((foo2 foo3)) (hoge (foo4))) NIL
 
 ```
@@ -106,7 +114,7 @@ the actual usage is as follows.
 実際の使い方は下記の通りです。
 
 ```common-lisp
-(seek-files "def"
+(seek-files 'def
     "~/a.lisp"
     "~/b.lisp"
     "~/c.lisp")		; => 
@@ -146,6 +154,8 @@ have a good symbolic-expression life with unio.
 
 
 ## update history
+[2021-11-21] 0.2.5 １度に複数キーワードを検索出来るように仕様変更。またキーワードも文字列ではなくシンボルでも可に変更。
+
 [2021-11-20] 0.2.4 listが文字列だけでなく、S式の場合でも処理出来るように変更。seek-filesでキーワードがシンボルに変換されていたのを修正
 
 [2021-11-02] 0.2.3 sets macroの追加
