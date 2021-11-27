@@ -56,6 +56,6 @@
 (defmacro sets (var sexp)
   `(setf ,var (with-input-from-string
 		  (s (with-output-to-string (*standard-output*)
-		       ,sexp) :index len)
+		       ,sexp))
 		(read s))))		; => SETS
 
