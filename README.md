@@ -44,10 +44,18 @@ this function can search keywords from string list or symbol-expression.
 文字列あるいはS式からキーワードを検索し、該当する箇所を抜き出します。
 
 ```common-lisp
-(seek 'key1.key2.key3...key-n 'obj <skin> <rm-dup>)
+(seek "key" "obj" <skin> <rm-dup>)  ;<- recommend
+(seek 'key 'obj <skin> <rm-dup>)
 ;; <> means optional arguments.
 ;; key is string or symbol 
 ```
+However, if you use symbols, they will be evaluated as uppercase in the program.
+If you want to make the alphabet case-sensitive, it is recommended to use a string for the key and the object to be searched.
+
+但し、シンボルを使うと、プログラム内では大文字として評価されてしまうので、
+アルファベットの大文字小文字を区別したい場合はkeyや検索対象のobjectには
+文字列を使用する事をオススメします。
+
 there is a skin option, you can put your favorite positive integer as far as possible.
 the option is able to select out layer S-expression.
 default number is 0.
@@ -62,16 +70,16 @@ anyway,you can use this function like this.
 
 ```common-lisp
 ;; set sample list(string or s-exp)
-(setq lst '((((((hoge (foo1) bar))))(((foo2 foo3)))(((hoge (foo4)) bar))))) ; => ((((((HOGE (FOO1) BAR)))) (((FOO2 FOO3))) (((HOGE (FOO4)) BAR))))
+(setq lst "((((((hoge (foo1) bar))))(((foo2 foo3)))(((hoge (foo4)) bar))))") ; => "((((((hoge (foo1) bar))))(((foo2 foo3)))(((hoge (foo4)) bar))))"
 
 ;; pickup the all word include "foo"
-(seek 'foo lst)				; => ((foo1) (foo2 foo3) (foo4))NIL
+(seek "foo" lst)							     ; => ("(foo1)" "(foo2 foo3)" "(foo4)")
+NIL
 
-;; you can specify several keywords in one time like this.
-(seek 'foo1.foo4 lst)			; => ((foo1))((foo4))NIL
-
-(seek 'foo lst 1)			; => ((hoge (foo1) bar) ((foo2 foo3)) (hoge (foo4)))NIL
-(seek 'foo lst 2)			; => (((hoge (foo1) bar)) (((foo2 foo3))) ((hoge (foo4)) bar))NIL
+(seek "foo" lst 1)			; => ("(hoge (foo1) bar)" "((foo2 foo3))" "(hoge (foo4))")
+NIL
+(seek "foo" lst 2)			; => ("((hoge (foo1) bar))" "(((foo2 foo3)))" "((hoge (foo4)) bar)")
+NIL
 
 ```
 If the skin option is specified, 
@@ -93,10 +101,10 @@ rm-depオプションを使えば重複データを削除しないようにも�
 
 ```common-lisp
 ;; if you don't want to use remove-duplicate function, you should set nil as the option.
-(seek 'foo lst 0 nil)			; => 
-((foo1) (foo2 foo3) (foo2 foo3) (foo4)) NIL
-(seek 'foo lst 1 nil)			; => 
-((hoge (foo1) bar) ((foo2 foo3)) ((foo2 foo3)) (hoge (foo4))) NIL
+(seek "foo" lst 0 nil)			; => ("(foo1)" "(foo2 foo3)" "(foo2 foo3)" "(foo4)")
+NIL
+(seek "foo" lst 1 nil)			; => ("(hoge (foo1) bar)" "((foo2 foo3))" "((foo2 foo3))" "(hoge (foo4))")
+NIL
 
 ```
 
@@ -114,23 +122,24 @@ the actual usage is as follows.
 実際の使い方は下記の通りです。
 
 ```common-lisp
-(seek-files 'def
-    "~/a.lisp"
-    "~/b.lisp"
-    "~/c.lisp")		; => 
-((defun test4 (x) (print x)) (defun main ()) (defpackage :myapp
-  (:use :cl)
-  (:export :main))
- (defun test3 (x)
+(seek-files "defun" "~/a.lisp")		; => ("(defun test-a (x) (lambda (x) (* x x)))")
+NIL
+(seek-files "defun" "~/b.lisp")		; => ("(defun test-b (x) (print x))")
+NIL
+(seek-files "defun" "~/c.lisp")		; => ("(defun test-c (x)
   (let ((a 1) (b 0))
-    (lambda (x) (+ a b x))))
-			       (defun main () (test3 7))) NIL
+    (lambda (x) (+ a b x))))"
+ "(defun main () (test-c 7))")
+NIL
+;; if you want several files to evaluate in one time, you can use regular expression like this.
+(seek-files "defun" "~/*.lisp")				; =>
+("(defun test-a (x) (lambda (x) (* x x)))" "(defun test-b (x) (print x))"
+ "(defun test-c (x)
+  (let ((a 1) (b 0))
+    (lambda (x) (+ a b x))))"
+ "(defun main () (test-c 7))")
+NIL
 ```
-in paticular, I don't support regular expression,
-but as you see,it will also pickup the words that contain keyword.
-
-特に正規表現に対応はしてませんが、ご覧の通り、
-検索キーワードを含むワードもピックアップしてくれます。
 
 ### sets
 if you want to bind above evaluated data in a variable,
@@ -140,8 +149,10 @@ seekやseek-filesで評価したS式を変数に格納して利用したい場�
 setsマクロが使えます。使い方はsetqやsetfと同じような書き方で使えます。
 
 ```common-lisp
+;; if you use setf ...
+(setf a (seek "foo" lst))                                                  ; => NIL 
+a                                                                          ; => NIL　; you can't bind result of the evaluation to variable.
 ;;(sets var sexp)
-
 (sets a (seek "foo" lst))						   ; => ((FOO1) (FOO2 FOO3) (FOO4))
 (car a)									   ; => (FOO1)
 (cdr a)									   ; => ((FOO2 FOO3) (FOO4))
@@ -154,6 +165,8 @@ have a good symbolic-expression life with unio.
 
 
 ## update history
+[2021-12-06] 0.2.7 seekの複数キーワード対応廃止。評価形式変更修正。seek-filesで正規表現対応。
+
 [2021-11-27] 0.2.6 setsマクロから隠しindexを削除。warningの原因になっていたため。
 
 [2021-11-21] 0.2.5 １度に複数キーワードを検索出来るように仕様変更。またキーワードも文字列ではなくシンボルでも可に変更。
@@ -174,7 +187,7 @@ have a good symbolic-expression life with unio.
 
 ## todo
 - seek-filesする際、ファイルが純粋なS式で構成されていない（例えばシェバングなど含んでいる）場合、エラーとなりNILだけが返されるので、それに対応する。
-- seek-filesを使う際に、正規表現でパスネーム指定出来るようにする。（現状、１つ１つファイル名を指定して上げなくてはいけない）。
+- ~~seek-filesを使う際に、正規表現でパスネーム指定出来るようにする。（現状、１つ１つファイル名を指定して上げなくてはいけない）。~~[2021-12-06]対応済
 - ヘルプも表示出来るようにする。
 - コマンドラインから実行出来るようにする。
 - だいたい開発が落ち着いたら、型指定などの最適化をする。
