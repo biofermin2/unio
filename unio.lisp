@@ -40,17 +40,17 @@
 					    (format t "~a" (remove-duplicates total :test #'equal))
 					  (format t "~a" total))))))) ; => SEEK
 
-
-(defmacro seek-files (key &optional (buff) &rest files)
+(defmacro seek-files (key &rest files)
   `(flet ((cat-files (&rest files)
-	   (dolist (f files)
-	     (with-open-file (in f :direction :input)
-	       (loop
-		 (if (setq buff (read in nil))
-		     (format t "~(~a~)~%" buff)
-		     (return)))))))
+	    (let (buff)
+	      (dolist (f files)
+		(with-open-file (in f :direction :input)
+		  (loop
+		    (if (setq buff (read in nil))
+			(format t "~(~a~)~%" buff)
+			(return))))))))
     (seek ,key (with-output-to-string (*standard-output*)
-		  (cat-files ,@files))))) ; => SEEK-FILES
+		 (cat-files ,@files))))) ; => SEEK-FILES
 
 ;; ok [2021-11-02 14:01:43]
 (defmacro sets (var sexp)
