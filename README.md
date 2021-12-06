@@ -115,7 +115,8 @@ grepのように文字列の代わりにファイル名を指定します。
 複数ファイルにあるS式のうち検索文字列を含む箇所を抜き出します。
 
 ```common-lisp
-(seek-files "string keyword" "file1" "file2"..."file-n")
+(seek-files "string keyword" "file's pathname")
+;; you can use string or pathname as file's pathname.
 ```
 the actual usage is as follows.
 
