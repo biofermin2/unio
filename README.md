@@ -157,8 +157,41 @@ a                                                                          ; => 
 (sets a (seek "foo" lst))						   ; => ((FOO1) (FOO2 FOO3) (FOO4))
 (car a)									   ; => (FOO1)
 (cdr a)									   ; => ((FOO2 FOO3) (FOO4))
+```
+
+To give you a better idea of what's going on, let's look at an example.
+
+何が起きているのかもうちょっとわかりやすい例題で示すと、
+
+```common-lisp
+(setq a 1)				; => 1
+a					; => 1
+(setf a (format t "~s" "HoGe"))		; => "HoGe"NIL
+a					; => NIL
+(sets a (format t "~s" "HoGe"))		; => "HoGe"
+a					; => "HoGe"
 
 ```
+
+In this way, it is possible to capture the data that
+
+is output to the output stream and assign it to the　variable.
+
+Instead, it assigns the NIL coming in from the input stream to variable a.
+
+With sets, you can forcibly grab the value in the output stream and assign it to the variable a.
+
+
+このように出力ストリームに向けて出力されたデータを捉えて、
+
+変数に代入する事が、setfでは出来ず、
+
+代わりに入力ストリームから入ってきたNILを変数aに代入してます。
+
+setsを使うと、出力ストリームに出力された値を強引に掴んで、
+
+変数aに代入出来ます。
+
 
 have a good symbolic-expression life with unio.
 
