@@ -154,9 +154,9 @@ setsマクロが使えます。使い方はsetqやsetfと同じような書き�
 (setf a (seek "foo" lst))                                                  ; => NIL 
 a                                                                          ; => NIL　; you can't bind result of the evaluation to variable.
 ;;(sets var sexp)
-(sets a (seek "foo" lst))						   ; => ((FOO1) (FOO2 FOO3) (FOO4))
-(car a)									   ; => (FOO1)
-(cdr a)									   ; => ((FOO2 FOO3) (FOO4))
+(sets a (seek "foo" lst))						   ; => ("(foo1)" "(foo2 foo3)" "(foo4)")
+(car a)									   ; => "(foo1)"
+(cdr a)									   ; => ("(foo2 foo3)" "(foo4)")
 ```
 
 To give you a better idea of what's going on, let's look at an example.
