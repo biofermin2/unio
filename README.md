@@ -11,6 +11,26 @@ so I named this package from onion in Latin language.
 このライブラリは玉ねぎのようにネストが深すぎて、ほしいデータをピックアップ出来ないという
 問題を解決するために作りました。unioという名前はラテン語の玉ねぎから取りました。
 
+Tools like grep will show you the lines that contain the keyword you searched for.
+
+However, when using lisp, there are many times when you want to know not only the line containing the search keyword,
+
+but also the S-expression.
+
+unio picks up all the S-expressions that contain the search keyword.
+
+In this way, unio will pick up all S-expressions that contain the search keyword. 
+
+You can also expand the range of S-expressions you want to pick up by specifying layers.
+
+grepといったツールを使うと検索したキーワードを含む行を表示してくれます。
+
+しかし、lispを使っていると、検索キーワードを含む行だけではなく、S式を知りたいと思う事が多々あったりします。
+
+unioではその様に検索キーワードを含むS式を全てピックアップしてくれます。
+
+またレイヤー指定でピックアップしたいS式の範囲を広げる事も出来ます。
+
 ## setup
 this guidance made for linux users.
 
