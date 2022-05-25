@@ -64,10 +64,9 @@ this function can search keywords from string list or symbol-expression.
 文字列あるいはS式からキーワードを検索し、該当する箇所を抜き出します。
 
 ```common-lisp
-(seek "key" "obj" <skin> <rm-dup>)  ;<- recommend
-(seek 'key 'obj <skin> <rm-dup>)
-;; <> means optional arguments.
-;; key is string or symbol 
+(seek "key" "obj")  ;<- recommend
+(seek 'key 'obj)
+;; you can select string or symbol as key.
 ```
 However, if you use symbols, they will be evaluated as uppercase in the program.
 If you want to make the alphabet case-sensitive, it is recommended to use a string for the key and the object to be searched.
@@ -76,11 +75,11 @@ If you want to make the alphabet case-sensitive, it is recommended to use a stri
 アルファベットの大文字小文字を区別したい場合はkeyや検索対象のobjectには
 文字列を使用する事をオススメします。
 
-there is a skin option, you can put your favorite positive integer as far as possible.
-the option is able to select out layer S-expression.
+there is a skin keyword, you can put your favorite positive integer as far as possible.
+the keyword is able to select out layer S-expression.
 default number is 0.
 
-またオプションとしてskinが設定出来ます。
+またキーワードとしてskinが設定出来ます。
 それで検索文字列を含むS式よりも外側の括弧を指定出来ます。
 デフォルト値は０となっています。
 
@@ -96,36 +95,44 @@ anyway,you can use this function like this.
 (seek "foo" lst)							     ; => ("(foo1)" "(foo2 foo3)" "(foo4)")
 NIL
 
-(seek "foo" lst 1)			; => ("(hoge (foo1) bar)" "((foo2 foo3))" "(hoge (foo4))")
+(seek "foo" lst :skin 1)			; => ("(hoge (foo1) bar)" "((foo2 foo3))" "(hoge (foo4))")
 NIL
-(seek "foo" lst 2)			; => ("((hoge (foo1) bar))" "(((foo2 foo3)))" "((hoge (foo4)) bar)")
+(seek "foo" lst :skin 2)			; => ("((hoge (foo1) bar))" "(((foo2 foo3)))" "((hoge (foo4)) bar)")
 NIL
 
 ```
-If the skin option is specified, 
+If the skin keyword is specified, 
 but there are no parentheses outside,
 it will not be displayed.
 
-skinオプションで指定しても外側に括弧が存在しない場合、
+skinキーワードで指定しても外側に括弧が存在しない場合、
 表示されなくなりますので、ご注意下さい。
 
 and duplicated data have removed in normal.
 but if you use rm-dup option, you can avoid it.
-in that time,you have to set skin option too.
 but maybe you don't use this option.
 
 また、通常重複したデータは削除されていますが、
-rm-depオプションを使えば重複データを削除しないようにも出来ます。
-その際はskinオプションも必ず入力して下さい。
+rm-depキーワードを使えば重複データを削除しないようにも出来ます。
 ただ、普通は使わないと思います。
 
 ```common-lisp
-;; if you don't want to use remove-duplicate function, you should set nil as the option.
-(seek "foo" lst 0 nil)			; => ("(foo1)" "(foo2 foo3)" "(foo2 foo3)" "(foo4)")
-NIL
-(seek "foo" lst 1 nil)			; => ("(hoge (foo1) bar)" "((foo2 foo3))" "((foo2 foo3))" "(hoge (foo4))")
+;; if you don't want to use remove-duplicate function, you should set nil.
+(seek "foo" lst :rm-dup nil)			; => ("(foo1)" "(foo2 foo3)" "(foo2 foo3)" "(foo4)")
 NIL
 
+```
+Finally, I also added a new str keyword.
+The default value is t, but if you change it to nil,
+string chage to a list too.
+
+最後に新しくstrキーワードも追加しました。
+このキーワードのデフォルト値はtですが、nilに変更すると、
+文字列からリストに変更されます。
+
+```common-lisp
+(seek "foo" lst :str nil)		; => ((foo1) (foo2 foo3) (foo4))
+NIL
 ```
 
 ### seek-files
@@ -219,6 +226,8 @@ have a good symbolic-expression life with unio.
 
 
 ## update history
+[2022-05-25] 0.2.8 seek functionのlambda-listをoptionalからkeywordに変更。strキーワードの追加。
+
 [2021-12-06] 0.2.7 seekの複数キーワード対応廃止。評価形式変更修正。seek-filesで正規表現対応。
 
 [2021-11-27] 0.2.6 setsマクロから隠しindexを削除。warningの原因になっていたため。
