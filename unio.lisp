@@ -4,8 +4,8 @@
     (:export :sets :seek :seek-files))
 (in-package #:unio)
 
-(defun seek (key list &optional (skin 0) (rm-dup t)
-		 &aux (depth 0) pos)
+;; ok [2022-05-24 22:01:37]
+(defun seek (key list &key (skin 0) (rm-dup t) (str t) &aux (depth 0))
   (loop :with k = (format nil "~a" key)
 	:with list = (format nil "~a" list)
 	:with k-len = (length k)
@@ -25,9 +25,12 @@
 			 :for open-pos = (position `(#\( ,k-depth) first-part :test #'equal :from-end t)
 			 :for close-pos = (+ p (position `(#\) ,(1- k-depth)) rest-part :test #'equal) 1)
 			 :collect (subseq list open-pos close-pos) :into total
-			 :finally (if rm-dup
-				      (format t "~s~%" (remove-duplicates total :test #'equal))
-				    (format t "~s~%" total)))))) ; => SEEK
+		      :finally (progn
+				 (when rm-dup
+				   (setf total (remove-duplicates total :test #'equal)))
+				 (if str
+				     (format t "~s~%" total)
+				     (format t "~a~%" total)))))))
 
 (defmacro seek-files (key &rest files)
   `(flet ((cat-files (&rest files)
