@@ -78,10 +78,5 @@
 		(read s))))		; => SETS
 
 (defun peel (lst)
-  (loop :for i :in lst
-     :append i))			; => PEEL
-
-(defun main (&rest args)
-  `(seek-file ,args))
-
+  (apply #'append lst))			; => PEEL
 
