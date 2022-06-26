@@ -227,6 +227,7 @@ have a good symbolic-expression life with unio.
 
 ## update history
 [2022-06-26] 0.3.0 完全検索のキーワードオプション追加、seekに３回使われているloopマクロをmap関数で書き直し。評価結果をダイレクトに利用出来るように変更。
+                    コマンドライン実行出来るようにros scriptとバイナリファイルも追加
 
 [2022-05-25] 0.2.8 seek functionのlambda-listをoptionalからkeywordに変更。strキーワードの追加。
 
