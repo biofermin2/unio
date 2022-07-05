@@ -49,6 +49,7 @@
 
 (defun seek (k l &key (skin 0) (dup nil) (str t) (exact nil) (opt :upcase))
   (check-type k string)
+<<<<<<< HEAD
   (let ((sl (princ-to-string l))
 	(c (elt k 0))
 	pos
@@ -62,6 +63,20 @@
 						    (string-equal k (subseq sl p (+ p k-len)))
 						    (blank/paren-p (elt (subseq sl (+ p k-len)) 0))
 						    (blank/paren-p (elt (subseq sl (- p 1)) 0)))
+=======
+  (let ((c (elt k 0))
+	pos
+	(k-len (length k))
+	(pl (parsed-list l)))
+    (mapcar #'(lambda (x) (let ((p (car x)))
+			    (cond ((not exact) (when (and (string-equal c (cadr x))
+							  (string-equal k (subseq l p (+ p k-len))))
+						 (push x pos)))
+				  (exact (when (and (string-equal c (cadr x))
+						    (string-equal k (subseq l p (+ p k-len)))
+						    (blank/paren-p (elt (subseq l (+ p k-len)) 0))
+						    (blank/paren-p (elt (subseq l (- p 1)) 0)))
+>>>>>>> 05f230ad36e5ba90bd305a714dab6b1e65756e0e
 					   (push x pos))))))
 	    pl)
     (let ((base (get-core pl (reverse pos) :skin skin)))
