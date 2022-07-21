@@ -80,7 +80,8 @@
       (unless dup
 	(setf base (remove-duplicates base :test #'string-equal)))
       (when dep
-	(print (reverse depth-lst)))
+	(print (reverse depth-lst))
+	(setf depth-lst nil))
       (if str
 	  base
 	  (set-readtable opt (mapcar #'read-from-string base)))))) ; => SEEK
