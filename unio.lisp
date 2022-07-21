@@ -1,14 +1,15 @@
 (defpackage :unio
   (:use :cl)
-  (:export :cat :peel :seek :seek-files :sets)) ; => #<PACKAGE "UNIO">
+  (:export :depth-lst :cat :peel :seek :seek-files :sets)) ; => #<PACKAGE "UNIO">
 (in-package :unio)				; => #<PACKAGE "UNIO">
+
+(defparameter depth-lst ())		; => DEPTH-LST
 
 (set-dispatch-macro-character #\# #\!
   (lambda (stream char n)
     (declare (ignore char n))
     (do* ((ch (read-char stream nil nil) (read-char stream nil nil)))
          ((or (null ch) (eql ch #\newline)) (values))))) ; => T
-
 
 (defun parsed-list (l)
   (let ((depth 0)
@@ -45,10 +46,20 @@
 			       (k-depth (- (third x) skin))
 			       (open-pos (position `(#\( ,k-depth) first-part :test #'equal :from-end t))
 			       (close-pos (+ p (position `(#\) ,(1- k-depth)) rest-part :test #'equal) 1)))
-			  (coerce (subseq (mapcar #'cadr pl) open-pos close-pos) 'string)))
+			  (values (coerce (subseq (mapcar #'cadr pl) open-pos close-pos) 'string)
+				  (push k-depth depth-lst))))
 	  pos-lst))			; => GET-CORE
 
-(defun seek (k l &key (skin 0) (dup nil) (str t) (exact nil) (opt :upcase))
+
+(defun flatten (x)
+  (labels ((rec (x acc)
+                (cond ((null x) acc)
+                      ((atom x) (cons x acc))
+                      (t (rec (car x) (rec (cdr x) acc))))))
+    (rec x nil)))			; => FLATTEN
+
+
+(defun seek (k l &key (skin 0) (dup nil) (dep nil) (str t) (exact nil) (opt :upcase))
   (check-type k string)
   (let* ((sl (princ-to-string l))
 	(c (elt k 0))
@@ -68,6 +79,8 @@
     (let ((base (get-core pl (reverse pos) :skin skin)))
       (unless dup
 	(setf base (remove-duplicates base :test #'string-equal)))
+      (when dep
+	(print (reverse depth-lst)))
       (if str
 	  base
 	  (set-readtable opt (mapcar #'read-from-string base)))))) ; => SEEK
