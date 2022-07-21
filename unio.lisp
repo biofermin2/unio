@@ -31,7 +31,8 @@
 
 (defmacro set-readtable (opt &body body)
   "opt:upcase,downcase,preserve,invert"
-  `(let ((*readtable* (copy-readtable nil)))
+  `(let ((*readtable* (copy-readtable nil))
+	 *read-eval*)
      (setf (readtable-case *readtable*) ,opt)
      ,@body))				; => SET-READTABLE
 
