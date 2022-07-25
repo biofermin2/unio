@@ -80,8 +80,8 @@
       (unless dup
 	(setf base (remove-duplicates base :test #'string-equal)))
       (when dep
-	(print (reverse depth-lst))
-	(setf depth-lst nil))
+	(print (reverse depth-lst)))
+      (setf depth-lst nil)
       (if str
 	  base
 	  (set-readtable opt (mapcar #'read-from-string base)))))) ; => SEEK
@@ -95,7 +95,7 @@
 
 (defmacro seek-files (key &rest files)
   `(seek ,key (with-output-to-string (*standard-output*)
-		(cat ,@files)) :str nil))	; => SEEK-FILES
+		(cat ,@files))))
 
 (defmacro sets (var sexp)
   `(setf ,var (with-input-from-string
