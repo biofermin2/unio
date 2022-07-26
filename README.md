@@ -170,6 +170,15 @@ NIL
 ```
 
 ### sets
+
+now seek function was changed to bind 
+the value in variable by setq or setf.
+so it doesn't need these explanation about sets any more.
+
+仕様変更したため、seekした結果をダイレクトに
+setq,setfなどで変数に束縛出来るようになりました。
+よって下記の説明は無視して下さい。
+
 if you want to bind above evaluated data in a variable,
 you can use this macro for it as same as setq, setf.
 
