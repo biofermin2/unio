@@ -3,7 +3,7 @@ Keyword searcher for S-expression.
 
 S式のためのキーワード検索ツール
 
-<img alt="unio symbol" src="https://github.com/biofermin2/unio/blob/main/unio2-1e.png">
+<img alt="unio symbol" height="200" width="400" src="https://github.com/biofermin2/unio/blob/main/unio3.svg">
 
 this library was developed for searching keywords in deep nested symbolic-expression like a onion.
 so I named this package from onion in Latin language.
