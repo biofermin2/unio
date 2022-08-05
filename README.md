@@ -45,10 +45,10 @@ roswellを使って、githubのこのリポジトリからダイレクトに
 ```shell
 $ ros install biofermin2/unio
 ```
-
 then it can load by quicklisp like this.
 
-quicklispを使って、local-projectsに入れたライブラリを呼び出します。
+ソースコード内でunioを使いたい時は、
+quicklispを使ってライブラリを呼び出します。
 
 ```common-lisp
 (ql:quickload :unio) 
@@ -58,13 +58,47 @@ that's it.
 以上で、unioライブラリが使えるようになります。
 
 ## usage
+### as ros script
+
+if you wanna use unio as grep command,
+
+grepのようにscriptとして使いたい場合は
+
+```shell
+$ cd ~/.roswell/local-projects/biofermin2/unio/roswell/
+$ ros build unio.ros
+$ mv unio ~/.roswell/bin/
+
+;; example of use
+;; $ unio <search keyword> <object>
+$ unio defun ~/test/*.lisp
+("(DEFUN TEST-A (X) (LAMBDA (X) (* X X)))")
+("(DEFUN TEST-B (X) (PRINT X))")
+("(DEFUN TEST-C (X)
+  (LET ((A 1) (B 0))
+    (LAMBDA (X) (+ A B X))))"
+ "(DEFUN MAIN () (TEST-C 7))")
+ 
+```
+
+However, there are still some cases where the parentheses are out of balance or for some other reason.
+errors may occur.
+
+しかし、括弧のバランスが崩れていたり何かしらの理由でまだまだ
+エラーが出る場合があります。
+
+
+The following instructions are for use within the source code.
+
+以下の説明はソースコード内で利用したい場合です。
+
 ### seek
 this function can search keywords from string list or symbol-expression.
 
 文字列あるいはS式からキーワードを検索し、該当する箇所を抜き出します。
 
 ```common-lisp
-(seek "key" "obj")  ;<- recommend
+(seek "key" "obj")  ;<- recommend string 
 (seek 'key 'obj)
 ;; you can select string or symbol as key.
 ```
@@ -91,7 +125,7 @@ anyway,you can use this function like this.
 ;; set sample list(string or s-exp)
 (setq lst "((((((hoge (foo1) bar))))(((foo2 foo3)))(((hoge (foo4)) bar))))") ; => "((((((hoge (foo1) bar))))(((foo2 foo3)))(((hoge (foo4)) bar))))"
 
-;; pickup the all word include "foo"
+;; unio pickup the all words include "foo"
 (seek "foo" lst)							     ; => ("(foo1)" "(foo2 foo3)" "(foo4)")
 NIL
 
@@ -113,22 +147,24 @@ but if you use rm-dup option, you can avoid it.
 but maybe you don't use this option.
 
 また、通常重複したデータは削除されていますが、
-rm-depキーワードを使えば重複データを削除しないようにも出来ます。
+depキーワードを使えば重複箇所もそのまま表示出来ます。
 ただ、普通は使わないと思います。
 
 ```common-lisp
 ;; if you don't want to use remove-duplicate function, you should set nil.
-(seek "foo" lst :rm-dup nil)			; => ("(foo1)" "(foo2 foo3)" "(foo2 foo3)" "(foo4)")
+(seek "foo" lst :dup t)			; => ("(foo1)" "(foo2 foo3)" "(foo2 foo3)" "(foo4)")
 NIL
 
 ```
 Finally, I also added a new str keyword.
 The default value is t, but if you change it to nil,
-string chage to a list too.
+string chage to a list too.This allows the returned 
+expression to be used as-is in the next expression.
 
 最後に新しくstrキーワードも追加しました。
 このキーワードのデフォルト値はtですが、nilに変更すると、
-文字列からリストに変更されます。
+文字列からリストに変更されます。これにより返された式を
+そのまま次の式で使う事なども出来ます。
 
 ```common-lisp
 (seek "foo" lst :str nil)		; => ((foo1) (foo2 foo3) (foo4))
@@ -168,66 +204,6 @@ NIL
  "(defun main () (test-c 7))")
 NIL
 ```
-
-### sets
-
-now seek function was changed to bind 
-the value in variable by setq or setf.
-so it doesn't need these explanation about sets any more.
-
-仕様変更したため、seekした結果をダイレクトに
-setq,setfなどで変数に束縛出来るようになりました。
-よって下記の説明は無視して下さい。
-
-if you want to bind above evaluated data in a variable,
-you can use this macro for it as same as setq, setf.
-
-seekやseek-filesで評価したS式を変数に格納して利用したい場合、
-setsマクロが使えます。使い方はsetqやsetfと同じような書き方で使えます。
-
-```common-lisp
-;; if you use setf ...
-(setf a (seek "foo" lst))                                                  ; => NIL 
-a                                                                          ; => NIL　; you can't bind result of the evaluation to variable.
-;;(sets var sexp)
-(sets a (seek "foo" lst))						   ; => ("(foo1)" "(foo2 foo3)" "(foo4)")
-(car a)									   ; => "(foo1)"
-(cdr a)									   ; => ("(foo2 foo3)" "(foo4)")
-```
-
-To give you a better idea of what's going on, let's look at an example.
-
-何が起きているのかもうちょっとわかりやすい例題で示すと、
-
-```common-lisp
-(setq a 1)				; => 1
-a					; => 1
-(setf a (format t "~s" "HoGe"))		; => "HoGe"NIL
-a					; => NIL
-(sets a (format t "~s" "HoGe"))		; => "HoGe"
-a					; => "HoGe"
-
-```
-
-In this way, it is possible to capture the data that
-
-is output to the output stream and assign it to the　variable.
-
-Instead, it assigns the NIL coming in from the input stream to variable a.
-
-With sets, you can forcibly grab the value in the output stream and assign it to the variable a.
-
-
-このように出力ストリームに向けて出力されたデータを捉えて、
-
-変数に代入する事が、setfでは出来ず、
-
-代わりに入力ストリームから入ってきたNILを変数aに代入してます。
-
-setsを使うと、出力ストリームに出力された値を強引に掴んで、
-
-変数aに代入出来ます。
-
 
 have a good symbolic-expression life with unio.
 
