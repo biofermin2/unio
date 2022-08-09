@@ -51,16 +51,8 @@
 	  pos-lst))			; => GET-CORE
 
 
-(defun flatten (x)
-  (labels ((rec (x acc)
-                (cond ((null x) acc)
-                      ((atom x) (cons x acc))
-                      (t (rec (car x) (rec (cdr x) acc))))))
-    (rec x nil)))			; => FLATTEN
-
-
 (defun seek (k l &key (skin 0) (dup nil) (dep nil) (str t) (exact nil) (opt :upcase))
-  ;;(check-type k string)
+  (check-type k string)
   (let* ((sl (princ-to-string l))
 	(c (elt k 0))
 	pos
