@@ -100,16 +100,9 @@ this function can search keywords from string list or symbol-expression.
 文字列あるいはS式からキーワードを検索し、該当する箇所を抜き出します。
 
 ```common-lisp
-(seek "key" "obj")  ;<- recommend string 
-(seek 'key 'obj)
-;; you can select string or symbol as key.
-```
-However, if you use symbols, they will be evaluated as uppercase in the program.
-If you want to make the alphabet case-sensitive, it is recommended to use a string for the key and the object to be searched.
+(seek "key" "obj")  
 
-但し、シンボルを使うと、プログラム内では大文字として評価されてしまうので、
-アルファベットの大文字小文字を区別したい場合はkeyや検索対象のobjectには
-文字列を使用する事をオススメします。
+```
 
 there is a skin keyword, you can put your favorite positive integer as far as possible.
 the keyword is able to select out layer S-expression.
