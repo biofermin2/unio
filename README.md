@@ -62,7 +62,7 @@ that's it.
 ## usage
 ### as ros script
 
-if you wanna use unio as grep command,
+if you wanna use unio as like grep command,
 
 grepのようにscriptとして使いたい場合は
 
