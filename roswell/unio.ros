@@ -16,7 +16,7 @@ exec ros -Q -- $0 "$@"
   (let ((key (car argv))
 	(files (cdr argv)))
     (dolist (f files)
-      (format t "~s~%" (seek-files key f))))) ; => MAIN
-
+      (ignore-errors
+       (format t "~s~%" (seek-files key f)))))) ; => MAIN
 
 ;;; vim: set ft=lisp lisp:
