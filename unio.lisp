@@ -51,7 +51,7 @@
 	  pos-lst))			; => GET-CORE
 
 
-(defun seek (k l &key (skin 0) (dup nil) (dep nil) (str t) (exact nil) (opt :upcase))
+(defun seek (k l &key (skin 0) (dup nil) (dep nil) (str t) (exact nil) (opt :preserve))
   (check-type k string)
   (let* ((sl (princ-to-string l))
 	(c (elt k 0))
