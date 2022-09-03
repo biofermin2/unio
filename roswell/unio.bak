@@ -1,0 +1,22 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#|
+exec ros -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  #+quicklisp(ql:quickload '(:unio) :silent t)
+  )					; => NIL
+
+(defpackage :ros.script.unio1.3865144485
+  (:use :cl :unio))
+(in-package :ros.script.unio1.3865144485)	; => #<PACKAGE "ROS.SCRIPT.UNIO1.3865144485">
+
+(defun main (&rest argv)
+  (declare (ignorable argv))
+  (let ((key (car argv))
+	(files (cdr argv)))
+    (dolist (f files)
+      (ignore-errors
+       (format t "~s~%" (seek-files key f)))))) ; => MAIN
+
+;;; vim: set ft=lisp lisp:
