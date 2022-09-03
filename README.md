@@ -74,21 +74,23 @@ $ mv unio ~/.roswell/bin/
 ;; example of use
 ;; $ unio <search keyword> <object>
 $ unio defun ~/test/*.lisp
-("(DEFUN TEST-A (X) (LAMBDA (X) (* X X)))")
-("(DEFUN TEST-B (X) (PRINT X))")
-("(DEFUN TEST-C (X)
-  (LET ((A 1) (B 0))
-    (LAMBDA (X) (+ A B X))))"
- "(DEFUN MAIN () (TEST-C 7))")
+❯ unio defun *.lisp
+;;; a.lisp
+((defun test-a (x)
+  (lambda (x) (* x x))))
+;;; b.lisp
+((defun test-b (x)
+  (print x)))
+;;; c.lisp
+((defun test-c (x)
+  (let ((a 1)
+        (b 0))
+    (lambda (x) (+ a b x))))
+ (defun main ()
+(test-c 7)))
+
  
 ```
-
-However, there are still some cases where the parentheses are out of balance or for some other reason.
-errors may occur.
-
-しかし、括弧のバランスが崩れていたり何かしらの理由でまだまだ
-エラーが出る場合があります。
-
 
 The following instructions are for use within the source code.
 
@@ -166,39 +168,6 @@ expression to be used as-is in the next expression.
 NIL
 ```
 
-### seek-files
-this macro can search in several files like the grep command.
-
-grepのように文字列の代わりにファイル名を指定します。
-複数ファイルにあるS式のうち検索文字列を含む箇所を抜き出します。
-
-```common-lisp
-(seek-files "string keyword" "file's pathname")
-;; you can use string or pathname as file's pathname.
-```
-the actual usage is as follows.
-
-実際の使い方は下記の通りです。
-
-```common-lisp
-(seek-files "defun" "~/a.lisp")		; => ("(defun test-a (x) (lambda (x) (* x x)))")
-NIL
-(seek-files "defun" "~/b.lisp")		; => ("(defun test-b (x) (print x))")
-NIL
-(seek-files "defun" "~/c.lisp")		; => ("(defun test-c (x)
-  (let ((a 1) (b 0))
-    (lambda (x) (+ a b x))))"
- "(defun main () (test-c 7))")
-NIL
-;; if you want several files to evaluate in one time, you can use regular expression like this.
-(seek-files "defun" "~/*.lisp")				; =>
-("(defun test-a (x) (lambda (x) (* x x)))" "(defun test-b (x) (print x))"
- "(defun test-c (x)
-  (let ((a 1) (b 0))
-    (lambda (x) (+ a b x))))"
- "(defun main () (test-c 7))")
-NIL
-```
 
 have a good symbolic-expression life with unio.
 
@@ -206,6 +175,8 @@ have a good symbolic-expression life with unio.
 
 
 ## update history
+[2022-09-03] 0.3.3 seek-filesの廃止、その代わりファイル対応用の関数string-catを追加。ros scriptもそれに合わせて修正。
+
 [2022-06-26] 0.3.0 完全検索のキーワードオプション追加、seekに３回使われているloopマクロをmap関数で書き直し。評価結果をダイレクトに利用出来るように変更。
                     コマンドライン実行出来るようにros scriptとバイナリファイルも追加
 
