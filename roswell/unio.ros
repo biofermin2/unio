@@ -13,12 +13,17 @@ exec ros -Q -- $0 "$@"
 
 (defun main (&rest argv)
   (declare (ignorable argv))
-  (ignore-errors
-   (let ((key (car argv))
-	 (files (mappend #'directory (cdr argv))))
-     (dolist (f files)
-       (let ((result (seek key (string-cat f))))
-         (when result
-           (format t ";;; ~a~%~a~%" (file-namestring f) result))))))) ; => 
+  (let* ((key (car argv))
+         (hl-key (format nil "[31m~a[0m" key))
+         (files (mappend #'directory (cdr argv))))
+    (dolist (f files)
+      (let ((result (seek key (string-cat f))))
+        (when result
+          (format t "~%;;; ~a~%~%~s~%"
+                  (file-namestring f)
+                  (mapcar #'(lambda (x) (%s key hl-key x))
+                          result))))))) ; =>MAIN 
+
+
 
 ;;; vim: set ft=lisp lisp:
