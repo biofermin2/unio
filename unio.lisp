@@ -41,12 +41,10 @@
 
 
 (defun scan (key obj)
-  (let* ((key-len (length key))
-         (result (search key obj))
-        (start (when result result)))
-    (if start
-        (values start (+ start key-len))
-        nil)))                          ; =>SCAN 
+  (let ((key-len (length key))
+         (start (search key obj)))
+    (when start
+        (values start (+ start key-len))))) ; =>SCAN 
 
 (defun %s (old new obj)
   (multiple-value-bind (start end)
