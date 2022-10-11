@@ -31,7 +31,7 @@ unioではその様に検索キーワードを含むS式を全てピックアッ
 
 またレイヤー指定でピックアップしたいS式の範囲を広げる事も出来ます。
 
-<img alt="execute example" height="400" width="400" src="https://github.com/biofermin2/unio/blob/main/unio.png">
+<a href="https://youtu.be/pPUw737Ln-A" alt="この画像をクリックすれば動画を拡大して見る事が出来ます。"><img alt="execute example" src="https://github.com/biofermin2/unio/blob/main/unio-3.gif"></a>
 
 ## setup
 this guidance made for linux users.
