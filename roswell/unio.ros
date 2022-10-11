@@ -14,12 +14,12 @@ exec ros -Q -- $0 "$@"
 (defun main (&rest argv)
   (declare (ignorable argv))
   (let* ((key (car argv))
-         (hl-key (format nil "[31m~a[0m" key))
+         (hl-key (format nil "[91m~a[0m" key))
          (files (mappend #'directory (cdr argv))))
     (dolist (f files)
       (let ((result (seek key (string-cat f))))
         (when result
-          (format t "~%;;; ~a~%~%~s~%"
+          (format t "~%[95m;;;[96m ~a[0m~%~%~s~%"
                   (file-namestring f)
                   (mapcar #'(lambda (x) (%s key hl-key x))
                           result))))))) ; =>MAIN 
