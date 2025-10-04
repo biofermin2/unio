@@ -47,20 +47,27 @@ roswellを使って、githubのこのリポジトリからダイレクトに
 ```shell
 $ ros install biofermin2/unio
 ```
-then it can load by quicklisp like this.
 
-ソースコード内でunioを使いたい時は、
-quicklispを使ってライブラリを呼び出します。
-
-```common-lisp
-(ql:quickload :unio) 
-```
 that's it.
 
-以上で、unioライブラリが使えるようになります。
+セットアップは以上です。
 
 ## usage
-### as ros script
+unioの使い方には２通りあります。
+
+１．コマンドラインツールとして
+他のunixコマンド同様にshellのコマンドラインから対象ファイルを指定してS式検索出来ます。
+$ unio "<検索キーワード>" <検索対象ファイル>
+
+２．ライブラリとして
+ソースコード内でquicklispから読み込んでunioの機能を使います。
+本来こちらの機能をメインに開発していたのでキーワード等で
+より高度なS式検索を実行出来ます。
+
+では以下にそれぞれの詳細な設定や使い方の説明をします。
+
+### １．as ros script
+コマンドラインツールとしての使い方
 
 if you wanna use unio as like grep command,
 
@@ -91,12 +98,30 @@ $ unio defun ~/test/*.lisp
 
  
 ```
+### 2.as library
+
+ライブラリとしての使い方
 
 The following instructions are for use within the source code.
 
 以下の説明はソースコード内で利用したい場合です。
+```
+then it can load by quicklisp like this.
 
-### seek
+ソースコード内でunioを使いたい時は、
+quicklispを使ってライブラリを呼び出します。
+
+```common-lisp
+(ql:quickload :unio)
+
+;; パッケージでunioを指定しておくといちいちunio:のprefixを書かなくて良くなる
+(defpackage :hoge-sample
+  (:use :cl :unio ...))
+(in-package :hoge-sample)
+
+```
+
+#### seek
 this function can search keywords from string list or symbol-expression.
 
 文字列あるいはS式からキーワードを検索し、該当する箇所を抜き出します。
@@ -105,6 +130,12 @@ this function can search keywords from string list or symbol-expression.
 (seek "key" "obj")  
 
 ```
+This is enough for basic use in source code.
+The following are more advanced usage,
+but I recommend learning them after you've become comfortable with the basic.
+
+基本ソースコード上で使うのであるならこれだけ覚えておけば十分です。
+以下はより高度な使い方ですが、それは使い慣れてからをオススメ致します。
 
 there is a skin keyword, you can put your favorite positive integer as far as possible.
 the keyword is able to select out layer S-expression.
