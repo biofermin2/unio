@@ -109,7 +109,7 @@ $ unio defun ~/test/*.lisp
 The following instructions are for use within the source code.
 
 以下の説明はソースコード内で利用したい場合です。
-```
+
 then it can load by quicklisp like this.
 
 ソースコード内でunioを使いたい時は、
@@ -134,6 +134,7 @@ this function can search keywords from string list or symbol-expression.
 (seek "key" "obj")  
 
 ```
+
 This is enough for basic use in source code.
 The following are more advanced usage,
 but I recommend learning them after you've become comfortable with the basic.
@@ -167,6 +168,7 @@ NIL
 NIL
 
 ```
+
 If the skin keyword is specified, 
 but there are no parentheses outside,
 it will not be displayed.
